@@ -1,0 +1,9 @@
+cn\smbms\dao\Provider\ProviderMapper.class
+cn\smbms\entity\Provider.class
+cn\smbms\dao\address\addressMapper.class
+cn\smbms\entity\User.class
+cn\smbms\entity\address.class
+cn\smbms\util\MybatisUntil.class
+cn\smbms\dao\bill\billMapper.class
+cn\smbms\dao\User\UserMapper.class
+cn\smbms\entity\bill.class

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--命名空间-->
+<mapper namespace="addressMapper">
+	<cache/>
+    <resultMap id="userResultMap" type="address">
+        <result property="id" column="id"/>
+        <result property="userName" column="userName"/>
+        <result property="creationDate" column="creationDate"/>
+
+    </resultMap>
+
+<!--	resultMap<select id="getbyproductName" resultMap="userResultMap">-->
+
+<!--      select b.*,p.proName from smbms_bill b,smbms_provider p-->
+<!--        where b.providerId = p.id and isPayment = #{isPayment}-->
+<!--        and providerId = #{providerId} and productName like concat('%',#{productName},'%');-->
+
+<!--	</select>-->
+<!--查询-->
+    <select id="getaddresslist" resultMap="userResultMap" >
+		select d.*,userName from smbms_user u,smbms_address d
+		where u.Id=d.userId
+
+	</select>
+    <!--	//添加语句 -->
+    <insert id="addadderss" parameterType="address">
+		insert into smbms_address(contact,addressDesc,postCode,creationDate)
+		values (#{contact},#{addressDesc},#{postCode},#{creationDate})
+	</insert>
+    <!--//修改语句-->
+    <update id="updateaddress" parameterType="address">
+		update smbms_address set  contact=#{contact},addressDesc=#{addressDesc},postCode=#{postCode},creationDate=#{creationDate}
+		where id=#{id}
+	</update>
+</mapper>

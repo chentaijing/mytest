@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--命名空间-->
+<mapper namespace="cn.smbms.dao.bill.billMapper">
+<cache/>
+<!--方式一-->
+<!--    <resultMap id="userResultMap" type="bill">-->
+<!--        <result property="id" column="id"/>-->
+<!--        <result property="providerId" column="id"/>-->
+<!--        <result property="productCount" column="productCount"/>-->
+<!--        <result property="isPayment" column="isPayment"/>-->
+<!--        <result property="creationDate" column="creationDate"/>-->
+
+<!--        <association property="provider" javaType="Provider">-->
+<!--            <id property="id" column="id"/>-->
+<!--            <result property="proCode" column="proCode"/>-->
+<!--            <result property="proName" column="proName"/>-->
+<!--        </association>-->
+<!--    </resultMap>-->
+
+<!--方式二 association-->
+<!--    复用-->
+    <resultMap id="userResultMap" type="bill">
+
+
+            <result property="id" column="id"/>
+            <result property="providerId" column="id"/>
+            <result property="productCount" column="productCount"/>
+            <result property="isPayment" column="isPayment"/>
+            <result property="creationDate" column="creationDate"/>
+<!--        一对一-->
+        <association property="provider" javaType="Provider" resultMap="userResultMap1"/>
+    </resultMap>
+
+    <resultMap id="userResultMap1" type="Provider">
+                <id property="id" column="id"/>
+                <result property="proCode" column="proCode"/>
+                <result property="proName" column="proName"/>
+    </resultMap>
+
+    <select id="getbyproductName" resultMap="userResultMap">
+
+--  select b.*,p.proName from smbms_bill b,smbms_provider p
+        select * from smbms_bill b,smbms_provider p
+<!--<where>会把拼接时重复and去掉-->
+<!--        <where>-->
+<!--            <if test="isPayment !=null">-->
+<!--                isPayment = #{isPayment}-->
+<!--            </if>-->
+<!--            <if test="providerId !=null">-->
+<!--                and providerId = #{providerId}-->
+<!--            </if>-->
+<!--            <if test="productName !=null">-->
+<!--                and productName like concat('%',#{productName},'%')-->
+<!--            </if>-->
+<!--            and b.providerId = p.id-->
+<!--        </where>-->
+--         if+trim替代where
+<!--        <trim prefix="where" prefixOverrides="and">-->
+<!--            <if test="isPayment !=null">-->
+<!--                isPayment = #{isPayment}-->
+<!--            </if>-->
+<!--            <if test="providerId !=null">-->
+<!--                and providerId = #{providerId}-->
+<!--            </if>-->
+<!--            <if test="productName !=null">-->
+<!--                and productName like concat('%',#{productName},'%')-->
+<!--            </if>-->
+<!--            and b.providerId = p.id-->
+<!--        </trim>-->
+
+
+        <trim prefix="where" prefixOverrides="and">
+            <if test="isPayment !=null">
+                isPayment = #{isPayment}
+            </if>
+            <if test="providerId !=null">
+                and providerId = #{providerId}
+            </if>
+            <if test="productName !=null">
+                and productName like concat('%',#{productName},'%')
+            </if>
+            and b.providerId = p.id order by b.productName desc
+            limit #{from},#{pagesize}
+        </trim>
+    </select>
+
+
+
+    <select id="billListbyProvider" resultMap="userResultMap">
+
+        select * from smbms_bill b,smbms_provider p
+        where b.providerId = p.id and isPayment = #{isPayment}
+        and providerId = #{providerId} and productName like concat('%',#{productName},'%');
+
+    </select>
+
+
+</mapper>
